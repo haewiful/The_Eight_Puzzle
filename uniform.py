@@ -15,11 +15,27 @@ class Problem:
 class Operator:
     def runall(self, node):
         left = self.move_blank_left(copy.deepcopy(node))
-        print("left: ", left)
+        # print("left: ", left)
+        # print()
+        right = self.move_blank_right(copy.deepcopy(node))
+        # print("right: ", right)
+        # print()
+        up = self.move_blank_up(copy.deepcopy(node))
+        # print("up: ", up)
+        # print()
+        down = self.move_blank_down(copy.deepcopy(node))
+        # print("down: ", down)
+        # print()
 
         expanded = []
         if left != None:
             expanded.append(left)
+        if right != None:
+            expanded.append(right)
+        if up != None:
+            expanded.append(up)
+        if down != None:
+            expanded.append(down)
         
         return expanded
 
@@ -30,6 +46,36 @@ class Operator:
                     if j>0:
                         node[i][j] = node[i][j-1]
                         node[i][j-1] = 0
+                        return node
+        return None
+
+    def move_blank_right(self, node):
+        for i in range(3):
+            for j in range(3):
+                if node[i][j] == 0:
+                    if j<2:
+                        node[i][j] = node[i][j+1]
+                        node[i][j+1] = 0
+                        return node
+        return None
+
+    def move_blank_down(self, node):
+        for i in range(3):
+            for j in range(3):
+                if node[i][j] == 0:
+                    if j<2:
+                        node[i][j] = node[i+1][j]
+                        node[i+1][j] = 0
+                        return node
+        return None
+
+    def move_blank_up(self, node):
+        for i in range(3):
+            for j in range(3):
+                if node[i][j] == 0:
+                    if i>0:
+                        node[i][j] = node[i-1][j]
+                        node[i-1][j] = 0
                         return node
         return None
 
@@ -61,7 +107,11 @@ for i in range(3):
     tmp = list(map(lambda x: int(x), tmp))
     init.append(tmp)
 
-print(expand(init, Operator()))
+for node in expand(init, Operator()):
+    for line in node:
+        print(line)
+    print()
+
 
 
 # problem = Problem(init)

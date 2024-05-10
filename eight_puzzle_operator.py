@@ -1,26 +1,31 @@
+from node import Node
+import copy
+
 class Operator:
     def runall(self, node):
-        left = self.move_blank_left(copy.deepcopy(node))
-        # print("left: ", left)
-        # print()
-        right = self.move_blank_right(copy.deepcopy(node))
+        left_state = self.move_blank_left(copy.deepcopy(node.state))
+        left = Node(left_state, node.depth+1, node.heuristic+1)
+        right_state = self.move_blank_right(copy.deepcopy(node.state))
+        right = Node(right_state, node.depth+1, node.heuristic+1)
         # print("right: ", right)
         # print()
-        up = self.move_blank_up(copy.deepcopy(node))
+        up_state = self.move_blank_up(copy.deepcopy(node.state))
+        up = Node(up_state, node.depth+1, node.heuristic+1)
         # print("up: ", up)
         # print()
-        down = self.move_blank_down(copy.deepcopy(node))
+        down_state = self.move_blank_down(copy.deepcopy(node.state))
+        down = Node(down_state, node.depth+1, node.heuristic+1)
         # print("down: ", down)
         # print()
 
         expanded = []
-        if left != None:
+        if left_state != None:
             expanded.append(left)
-        if right != None:
+        if right_state != None:
             expanded.append(right)
-        if up != None:
+        if up_state != None:
             expanded.append(up)
-        if down != None:
+        if down_state != None:
             expanded.append(down)
         
         return expanded
@@ -49,7 +54,7 @@ class Operator:
         for i in range(3):
             for j in range(3):
                 if node[i][j] == 0:
-                    if j<2:
+                    if i<2:
                         node[i][j] = node[i+1][j]
                         node[i+1][j] = 0
                         return node

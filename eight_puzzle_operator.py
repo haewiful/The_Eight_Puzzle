@@ -2,21 +2,20 @@ from node import Node
 import copy
 
 class Operator:
+
     def runall(self, node):
+        # left
         left_state = self.move_blank_left(copy.deepcopy(node.state))
-        left = Node(left_state, node.depth+1, node.heuristic+1)
+        left = Node(left_state, node.depth+1, 0)
+        # right
         right_state = self.move_blank_right(copy.deepcopy(node.state))
-        right = Node(right_state, node.depth+1, node.heuristic+1)
-        # print("right: ", right)
-        # print()
+        right = Node(right_state, node.depth+1, 0)
+        # up
         up_state = self.move_blank_up(copy.deepcopy(node.state))
-        up = Node(up_state, node.depth+1, node.heuristic+1)
-        # print("up: ", up)
-        # print()
+        up = Node(up_state, node.depth+1,0)
+        # down
         down_state = self.move_blank_down(copy.deepcopy(node.state))
-        down = Node(down_state, node.depth+1, node.heuristic+1)
-        # print("down: ", down)
-        # print()
+        down = Node(down_state, node.depth+1, 0)
 
         expanded = []
         if left_state != None:

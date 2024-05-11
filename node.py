@@ -13,8 +13,10 @@ class Node:
                 node_str += str(n) + " "
             node_str += "\n"
         
-        if self.depth != 0:
-            node_str += "g(n)= " + str(self.depth) + "\n"
-        if self.heuristic != 0:
-            node_str += "h(n)= " + str(self.heuristic) + "\n"
+        # if self.depth != 0:
+        #     node_str += "g(n)= " + str(self.depth) + "\n"
+        # if self.heuristic != 0:
+        #     node_str += "h(n)= " + str(self.heuristic) + "\n"
+        node_str += "g(n)= " + str(self.depth) + "\n"
+        node_str += "h(n)= " + str(self.heuristic) + "\n"
         return node_str

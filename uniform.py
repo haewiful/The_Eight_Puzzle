@@ -5,7 +5,7 @@ from eight_puzzle_operator import Operator
 from node import Node
 
 def general_search(problem, queueing_function):
-    init_node = Node(problem.init_state)
+    init_node = Node(problem.init_state, 0)
     nodes_queue = [init_node] # make queue with initial state
     checked = []
 
@@ -19,15 +19,15 @@ def general_search(problem, queueing_function):
         print(node)
         if problem.goal_test(node.state):
             return node
-        nodes_queue = queueing_function(nodes_queue, expand(node, problem.operators))
+        nodes_queue = queueing_function(nodes_queue, expand(node, problem.operator), problem.h_func)
 
 def check_duplicate(checked, state):
     if state in checked:
         return True
     return False
 
-def expand(node, operators):
-    return operators.runall(node)
+def expand(node, operator):
+    return operator.runall(node)
 
 def check_input(state):
     if len(state) != 3:
@@ -41,11 +41,43 @@ def check_input(state):
     
     return True
 
-def uniform_cost(nodes_queue, expanded):
+def uniform_cost(nodes_queue, expanded, _):
     for node in expanded:
         nodes_queue.append(node)
         
     return nodes_queue
+
+def misplaced_tiles_heuristic(nodes_queue, expanded, heuristic_func):
+    for new_node in expanded: # for each new node
+        new_node.heuristic = heuristic_func(new_node.state) # calculate heuristic score
+        if len(nodes_queue) == 0:
+            nodes_queue.append(new_node)
+            continue
+
+        # insert node according to heuristic + depth
+        inserted = False
+        for i in range(len(nodes_queue)):
+            curr_node = nodes_queue[i]
+
+            if curr_node.heuristic+curr_node.depth > new_node.heuristic+new_node.depth:
+                nodes_queue.insert(i, new_node) # find the location for the new node
+                inserted = True
+                break
+        if not inserted:
+            nodes_queue.append(new_node)
+    return nodes_queue
+
+def calculate_misplaced_tiles(state):
+    answer = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+    count=0
+    for i in range(3):
+        for j in range(3):
+            if answer[i][j] != state[i][j]:
+                count+=1
+    if count > 0:
+        count -= 1 # because we don't count the blank being misplaced
+    return count
+
 
 def main():
     init = []
@@ -59,10 +91,19 @@ def main():
     if not check_input(init):
         print("Invalid input")
         return
-
-    problem = Problem(init, Operator())
+    
     print()
-    node = general_search(problem, uniform_cost)
+
+    # Uniform Cost Search
+    # problem = Problem(init, Operator())
+    # node = general_search(problem, uniform_cost)
+    
+    # A* with Misplaced Tile heuristic
+    problem = Problem(init, Operator(), calculate_misplaced_tiles)
+    node = general_search(problem, misplaced_tiles_heuristic)
+    if isinstance(node, str):
+        print(node)
+        return
     print("---goal acheived---")
     print(node)
     print("It took", node.depth, "moves")
